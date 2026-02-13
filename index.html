@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tengo algo que decirte...</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            transition: background 0.5s;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 380px;
+            width: 90%;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+            border: 2px solid white;
+        }
+
+        .sobre {
+            font-size: 90px;
+            cursor: pointer;
+            display: block;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+        }
+        .sobre:hover { transform: scale(1.15) rotate(-5deg); }
+
+        .gif-container img {
+            width: 200px;
+            height: 200px;
+            border-radius: 25px;
+            margin-bottom: 20px;
+            object-fit: cover;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Estilo para los títulos (mantenemos tus textos) */
+        h1 { 
+            color: #d63384; 
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.2rem; 
+            margin: 15px 0; 
+        }
+
+        /* Estilo para los subtítulos */
+        p { 
+            color: #6c757d; 
+            margin-bottom: 25px; 
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+            min-height: 80px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Botón SI: Más llamativo y con pulso */
+        #btn-si { 
+            background: linear-gradient(45deg, #e91e63, #ff6090);
+            color: white; 
+            animation: pulse 2s infinite;
+        }
+        #btn-si:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(233,30,99,0.4); }
+
+        /* Botón NO: Más discreto */
+        #btn-no { 
+            background-color: #f8f9fa; 
+            color: #adb5bd; 
+            border: 1px solid #eee;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .hidden { display: none; }
+        .fugitivo { position: absolute; z-index: 999; }
+    </style>
+</head>
+<body>
+
+    <audio id="audio-abrir" src="https://www.myinstants.com/media/sounds/paper-rip.mp3"></audio>
+    <audio id="musica-no" src="Download.mp4" loop></audio>
+    <audio id="musica-si" src="https://www.myinstants.com/media/sounds/happy-happy-happy-cat.mp3"></audio>
+
+    <div class="card" id="pantalla-inicio">
+        <h1>Hola Amorcito, tengo algo que decirte... 💌💐💘</h1>
+        <div class="sobre" onclick="abrirCarta()">👆</div>
+        <p>Toca la pantalla</p>
+    </div>
+
+    <div class="card hidden" id="pantalla-propuesta">
+        <div class="gif-container">
+            <img id="imagen-cambiante" src="Sources/cat porpuesta.jpg">
+        </div>
+        <h1 id="pregunta">¿Quieres ser mi San Valentín? ❤️🥺👉👈</h1>
+        <p id="subtitulo">Prometo hacerte muy feliz ✨</p>
+        
+        <div class="btn-group">
+            <button class="btn" id="btn-si">Sí quiero 🥰</button>
+            <button class="btn" id="btn-no">No 😭</button>
+        </div>
+    </div>
+
+    <script>
+        const pantallaInicio = document.getElementById('pantalla-inicio');
+        const pantallaPropuesta = document.getElementById('pantalla-propuesta');
+        
+        const btnSi = document.getElementById('btn-si');
+        const btnNo = document.getElementById('btn-no');
+        const titulo = document.getElementById('pregunta');
+        const subtitulo = document.getElementById('subtitulo');
+        const imagen = document.getElementById('imagen-cambiante');
+        
+        const audioAbrir = document.getElementById('audio-abrir');
+        const audioNo = document.getElementById('musica-no');
+        const audioSi = document.getElementById('musica-si');
+
+        let fase = 0;
+
+        function abrirCarta() {
+            audioAbrir.play(); 
+            audioNo.play(); 
+            pantallaInicio.classList.add('hidden');
+            pantallaPropuesta.classList.remove('hidden');
+        }
+
+        // Tus textos originales sin cambios
+        const mensajes = [
+            { t: "¿Estás segura? 💔", s: "Piénsalo un poquito más...", i: "https://c.tenor.com/luvaFl1H3K0AAAAC/tenor.gif" },
+            { t: "no seas asi :c 😭", s: "Me va a dar algo...", i: "https://c.tenor.com/ngcc_hu1aJIAAAAd/tenor.gif" },
+            { t: "No me dejas opción... 😈", s: "¡Ahora es personal!", i: "https://c.tenor.com/VKZCcXu7S14AAAAC/tenor.gif" }
+        ];
+
+        btnNo.addEventListener('click', () => {
+            if (fase < mensajes.length) {
+                titulo.innerText = mensajes[fase].t;
+                subtitulo.innerText = mensajes[fase].s;
+                imagen.src = mensajes[fase].i;
+
+                let fontSize = parseFloat(window.getComputedStyle(btnSi).fontSize);
+                btnSi.style.fontSize = (fontSize + 12) + "px";
+                btnSi.style.padding = (fontSize) + "px " + (fontSize * 2) + "px";
+                
+                fase++;
+            } else {
+                moverBotonNo();
+            }
+        });
+
+        function lanzarCorazones() {
+            const duracion = 15 * 1000;
+            const animacionEnd = Date.now() + duracion;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            const intervalo = setInterval(function() {
+                const timeLeft = animacionEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(intervalo);
+                const particleCount = 50 * (timeLeft / duracion);
+                
+                confetti({
+                    ...defaults, particleCount,
+                    origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+                    shapes: ['heart'], colors: ['#ff0000', '#ff69b4', '#ff1493']
+                });
+                confetti({
+                    ...defaults, particleCount,
+                    origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+                    shapes: ['heart'], colors: ['#ff0000', '#ff69b4', '#ff1493']
+                });
+            }, 250);
+        }
+
+        btnSi.addEventListener('click', () => {
+            audioNo.pause();
+            audioSi.play();
+            lanzarCorazones();
+
+            pantallaPropuesta.innerHTML = `
+                <img src="https://media.tenor.com/ECATiSXWwm8AAAAi/dancing-cat-cat.gif" style="width:200px; border-radius:25px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+                <h1 style="margin-top:20px;">Para mi san valentin 💖</h1>
+                <p>Gracias por llenar mis dias de alegria y hacer que mi corazon lata maz fuerte. TE AMO!</p>
+            `;
+            
+            document.body.style.backgroundImage = "url('https://i.makeagif.com/media/12-31-2016/ofdnkc.gif')";
+            document.body.style.backgroundSize = "cover";
+            document.body.style.backgroundPosition = "center";
+        });
+
+        function moverBotonNo() {
+            btnNo.classList.add('fugitivo');
+            const x = Math.random() * (window.innerWidth - btnNo.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btnNo.offsetHeight);
+            btnNo.style.left = x + "px";
+            btnNo.style.top = y + "px";
+        }
+    </script>
+</body>
+</html>
